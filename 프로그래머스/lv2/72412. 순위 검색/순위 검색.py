@@ -1,6 +1,7 @@
 from itertools import combinations
 from collections import defaultdict
 
+# 이분탐색
 def lower_bound(begin, end, target_list, target):
     if begin >= end:
         return begin
