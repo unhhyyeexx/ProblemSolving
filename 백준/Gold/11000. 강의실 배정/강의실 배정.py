@@ -1,14 +1,26 @@
-import heapq
 import sys
+input = sys.stdin.readline
+import heapq
 
-N = int(sys.stdin.readline())
-arr = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]
-arr.sort()
 
-queue = [0]
-for i in range(N):
-    if queue[0] <= arr[i][0]:
-        heapq.heappop(queue)
-    heapq.heappush(queue, arr[i][1])
+n = int(input())
+lecture = []
+for _ in range(n):
+    lecture.append(list(map(int, input().split())))
 
-print(len(queue))
+answer = 0
+lecture.sort()
+
+room = []
+heapq.heappush(room, lecture[0][1])
+
+for i in range(1, n):
+    # 현재 회의실 끝나는 시간보다 다음 회의 시작 시간이 빠르면 방 하나 더 필요
+    if lecture[i][0] < room[0]:
+        heapq.heappush(room, lecture[i][1])
+    # 다음 회의 시작시간이 현재 회의 끝나는 시간보다 늦으면 한 방으로 가능
+    else:
+        heapq.heappop(room)
+        heapq.heappush(room, lecture[i][1])
+
+print(len(room))
