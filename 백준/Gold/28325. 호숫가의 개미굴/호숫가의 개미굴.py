@@ -14,17 +14,17 @@ def solution(arr):
             break
     arr = arr[i+1:] + arr[:i+1]
 
-    dp = [0] * n
+    zero_cnt = 0
     for i in range(n):
-        if arr[i] or dp[i]:
-            continue
-
-        for j in range(i, n):
-            if arr[i]:
-                break
-            dp[j] = 1
-        total += (j-i+1) // 2
-
+        if not arr[i]:
+            zero_cnt += 1
+        else:
+            total += (zero_cnt+1)//2
+            zero_cnt = 0
+    
+    if zero_cnt:
+        total += (zero_cnt+1)//2
+    
     return total
     
 
