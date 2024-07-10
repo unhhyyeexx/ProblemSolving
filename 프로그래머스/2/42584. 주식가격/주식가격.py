@@ -1,15 +1,15 @@
-from collections import deque
-
 def solution(prices):
-    answer = []
-    q = deque(prices)
-    while q:
-        now = q.popleft()
-        state = 0
-        for i in q:
-            state += 1
-            if now > i:
-                break
-        answer.append(state)
+    answer = [0] * len(prices)
+    n = len(prices)
+    stack = []
+    
+    for i in range(n):
+        while stack != [] and stack[-1][1] > prices[i]:
+            pre, _ = stack.pop()
+            answer[pre] = i - pre
+        stack.append((i, prices[i]))
+    
+    for i, s in stack:
+        answer[i] = n - 1 - i  
     
     return answer
