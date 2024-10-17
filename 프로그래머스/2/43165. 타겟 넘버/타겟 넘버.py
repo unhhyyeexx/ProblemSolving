@@ -1,17 +1,21 @@
 answer = 0 
 
-def dfs(numbers, target, idx, sumv):
+def dfs(n, numbers, target, depth, now):
     global answer
-    if idx == len(numbers):
-        if sumv == target:
+    
+    if depth == n-1:
+        if now + numbers[depth] == target:
             answer += 1
-        return
-
-    dfs(numbers, target, idx+1, sumv+numbers[idx])
-    dfs(numbers, target, idx+1, sumv-numbers[idx])
+        elif now - numbers[depth] == target:
+            answer += 1
+        return 
+    dfs(n, numbers, target, depth + 1, now+numbers[depth])
+    dfs(n, numbers, target, depth + 1, now-numbers[depth])
+    
+    return
 
 def solution(numbers, target):
     global answer
-    dfs(numbers, target, 0, 0)
+    dfs(len(numbers), numbers, target, 0, 0)
     
     return answer
