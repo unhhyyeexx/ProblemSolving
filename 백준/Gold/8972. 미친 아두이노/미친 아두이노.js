@@ -75,8 +75,6 @@ function move_crazy() {
     // 이동한 위치에 종수가 있으면,
     if (minLoc[0] === jr && minLoc[1] === jc) return false;
 
-    // newCrazy.push(minLoc);
-
     // {아두이노 위치 : 개수}
     crazyCnt[minLoc] = crazyCnt[minLoc] ? 1 + crazyCnt[minLoc] : 1;
   }
