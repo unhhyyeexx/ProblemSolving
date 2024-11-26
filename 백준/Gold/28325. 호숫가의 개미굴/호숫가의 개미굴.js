@@ -7,7 +7,7 @@ let room = input[1].trim().split(" ").map(Number);
 function solution() {
   let total = 0;
   room.forEach((n) => (total += n));
-  if (total === 0) return n / 2;
+  if (total === 0) return parseInt(n / 2);
 
   let flag = 0;
   for (let i = 0; i < n; i++) {
