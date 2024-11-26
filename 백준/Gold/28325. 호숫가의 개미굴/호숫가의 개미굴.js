@@ -2,38 +2,33 @@ const fs = require("fs");
 const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
 
 const n = +input[0];
-let room = input[1].trim().split(" ").map(Number);
+let room = input[1].trim().split(" ").map(BigInt);
 
 function solution() {
-  let total = 0;
-  room.forEach((n) => (total += n));
-  if (total === 0) return parseInt(n / 2);
-
   let flag = 0;
   for (let i = 0; i < n; i++) {
-    if (room[i] > 0) {
+    if (room[i] > 0n) {
       flag = i;
       break;
     }
   }
-  room = [...room.slice(flag, n), ...room.slice(0, flag)];
+  room = [...room.slice(flag), ...room.slice(0, flag)];
+  if (room[0] === 0n && room.at(-1) === 0n) {
+    room.pop();
+  }
 
-  let zeroCnt = 0;
-  for (let i = 0; i < n; i++) {
-    if (room[i] === 0) {
-      zeroCnt += 1;
+  const newN = room.length;
+  let answer = 0n;
+  for (let i = 0; i < newN; i++) {
+    if (room[i] === 0n) {
+      answer++;
+      if (room[i + 1] === 0n) i++;
     } else {
-      total += parseInt((zeroCnt + 1) / 2);
-      zeroCnt = 0;
+      answer += room[i];
     }
   }
 
-  if (zeroCnt > 0) {
-    total += parseInt((zeroCnt + 1) / 2);
-  }
-
-  return total;
+  return answer.toString();
 }
 
 console.log(solution());
-
