@@ -12,7 +12,7 @@ function solution() {
   let flag = 0;
   for (let i = 0; i < n; i++) {
     if (room[i] > 0) {
-      flag = 0;
+      flag = i;
       break;
     }
   }
