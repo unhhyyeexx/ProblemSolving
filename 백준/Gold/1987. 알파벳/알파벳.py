@@ -1,37 +1,55 @@
 import sys
 input = sys.stdin.readline
 
-r, c = map(int, input().split(" "))
+r, c = map(int, input().split())
+
 board = []
 for _ in range(r):
-    board.append(list(map(str, input().rstrip())))
+    board.append(list(input().rstrip()))
 
-def dfs(i, j, visited, r, c, board):
-    dirs = [(0,1), (1,0), (0,-1), (-1,0)]
+# 알파벳 -> 인덱스 map
+map_dict = {}
+for i in range(26):
+    map_dict[chr(65 + i)] = i
+
+# 방문 배열
+visited = [False] * 26
+
+
+def dfs(i, j):
+    dirs = [
+        (0, 1),
+        (0, -1),
+        (1, 0),
+        (-1, 0)
+    ]
 
     result = 1
 
     for di, dj in dirs:
-        ni, nj = i+di, j+dj
+        ni = i + di
+        nj = j + dj
 
-        if not (0<=ni<r and 0<=nj<c):
+        if ni < 0 or ni >= r or nj < 0 or nj >= c:
             continue
 
-        alpha = ord(board[ni][nj]) - ord('A')
-        if visited & (1 << alpha):
+        idx = map_dict[board[ni][nj]]
+
+        if visited[idx]:
             continue
-        
-        result = max(
-            result,
-            1+ dfs(ni, nj, visited | (1<<alpha), r, c, board)
-        )
+
+        visited[idx] = True
+        result = max(result, dfs(ni, nj) + 1)
+        visited[idx] = False  # 백트래킹
 
     return result
 
 
-def solution(r, c, board) :
-   start = ord(board[0][0]) - ord('A')
-   visited = 1<<start
-   return dfs(0, 0, visited, r, c, board)
+def solution():
+    start_idx = map_dict[board[0][0]]
+    visited[start_idx] = True
 
-print(solution(r, c, board))
+    return dfs(0, 0)
+
+
+print(solution())
