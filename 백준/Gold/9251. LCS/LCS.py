@@ -1,20 +1,19 @@
 import sys
 input = sys.stdin.readline
 
-def solution(first, second) :
-    f, s = len(first), len(second)
-    dp = [0] * s
+str1 = list(input().rstrip())
+str2 = list(input().rstrip())
 
-    for i in range(f):
-        cnt = 0
-        for j in range(s):
-            if cnt < dp[j]:
-                cnt = dp[j]
-            elif first[i] == second[j]:
-                dp[j] = cnt + 1
-    return max(dp)
+n = len(str1)
+m = len(str2)
 
+dp = [[0] * (m+1) for _ in range(n+1)]
 
-first = input().rstrip()
-second = input().rstrip()
-print(solution(first, second))
+for i in range(1, n+1):
+    for j in range(1, m+1):
+        if str1[i-1] == str2[j-1]:
+            dp[i][j] = dp[i-1][j-1] + 1
+        else:
+            dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+print(dp[n][m])
