@@ -1,35 +1,36 @@
 import sys
-from collections import deque
 input = sys.stdin.readline
+from collections import deque
 
-def solution(n, k, arr):
-    answer = 0
-    robot = deque([0]*n)
+n, k = map(int, input().split(" "))
+belt = list(map(int, input().split(" ")))
+robots = [False] * (n)
+step = 0
 
-    while True:
-        answer += 1
-        arr.rotate(1)
-        robot[-1] = 0
-        robot.rotate(1)
-        robot[-1] = 0 # 내리는 위치
+while True:
+    step += 1
 
-        for i in range(n-2, -1, -1):
-            # 이동하려는 칸 내구도 1 이상, 로봇 없음, 현재 칸은 로봇 있으면 이동
-            if arr[i+1] >= 1 and robot[i+1] == 0 and robot[i] == 1:
-                robot[i+1] = 1
-                robot[i] = 0
-                arr[i+1] -= 1
-        robot[-1] = 0
+    # 1. 회전
+    belt = [belt[-1]] + belt[:-1]
+    robots = [False] + robots[:-1]
+    robots[-1] = False # 내리기
 
-        if arr[0] != 0 and robot[0] == 0:
-            robot[0] = 1
-            arr[0] -= 1
-        
-        if arr.count(0) >= k:
-            break
+    # 2. 로봇 이동
+    for i in range(n-2, -1, -1):
+        if robots[i] and not robots[i+1] and belt[i+1] > 0:
+            robots[i] = False
+            robots[i+1] = True
+            belt[i+1] -= 1
     
-    return answer
+    robots[-1] = False # 내리기
 
-n, k = map(int, input().split())
-arr = deque(map(int, input().split()))
-print(solution(n, k, arr))
+    # 3. 로봇 올리기
+    if belt[0] > 0:
+        robots[0] = True
+        belt[0] -= 1
+    
+    # 4. 종료
+    if belt.count(0) >= k:
+        break
+
+print(step)
