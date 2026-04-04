@@ -1,37 +1,42 @@
+import sys
+input = sys.stdin.readline
 import heapq
-INF = int(1e9)
+INF = float("inf")
 
-def solution(start, graph, distance):
-    q = []
-    heapq.heappush(q, (0, start))
+n, m, x = map(int, input().split(" "))
+graph = [[] for _ in range(n+1)]
+reverse_graph = [[] for _ in range(n+1)]
+for _ in range(m):
+    a, b, c = map(int, input().split(" "))
+    graph[a].append((c, b))
+    reverse_graph[b].append((c, a))
+
+def dijkstra(start, g):
+    distance = [INF] * (n+1)
+    pq = []
     distance[start] = 0
-    while q:
-        time, now = heapq.heappop(q)
-        if distance[now] < time:
+    heapq.heappush(pq, (0, start))
+
+    while pq:
+        cost, now = heapq.heappop(pq)
+        if cost > distance[now]:
             continue
-        for i in graph[now]:
-            cost = time + i[1]
-            if cost < distance[i[0]]:
-                distance[i[0]] = cost
-                heapq.heappush(q, (cost, i[0]))
+            
+        for c, next in g[now]:
+            new_cost = cost + c
+            if distance[next] > new_cost:
+                distance[next] = new_cost
+                heapq.heappush(pq, (new_cost, next))
+    
+    return distance
 
+# x -> i
+dist_from_x = dijkstra(x, graph)
+# i-> x
+dist_to_x = dijkstra(x, reverse_graph)
 
-N, M, X = map(int, input().split())
-graph = [[] for _ in range(N+1)]
-distance = [INF] * (N+1)
-graph_re = [[] for _ in range(N+1)]
-distance_re = [INF] * (N+1)
+answer = 0
+for i in range(1, n+1):
+    answer = max(answer, dist_to_x[i] + dist_from_x[i])
 
-for _ in range(M):
-    s, e, t = map(int, input().split())
-    graph[s].append((e, t))
-    graph_re[e].append((s, t))
-
-solution(X, graph, distance)
-solution(X, graph_re, distance_re)
-
-result = 0
-for i in range(1, N+1):
-    result = max(result, distance[i] + distance_re[i])
-
-print(result)
+print(answer)
