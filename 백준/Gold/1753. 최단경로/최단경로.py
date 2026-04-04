@@ -1,32 +1,36 @@
+import sys
+input = sys.stdin.readline
 import heapq
+INF = 10e8
 
-def dijkstra(s):
-    queue = []
-    heapq.heappush(queue, (0, s))
-    distance[s] = 0
-    while queue:
-        dist, now = heapq.heappop(queue)
+v, e = map(int, input().split(" "))
+k = int(input())
+graph = [[] for _ in range(v+1)]
+for _ in range(e):
+    u, w, c = map(int, input().split(" "))
+    graph[u].append((c, w))
+
+distance = [INF] * (v+1)
+def dijkstra(start):
+    pq = []
+    heapq.heappush(pq, (0, start))
+    distance[start] = 0
+
+    while pq:
+        dist, now = heapq.heappop(pq)
         if distance[now] < dist:
             continue
-        for i in graph[now]:
-            cost = dist + i[1]
-            if cost < distance[i[0]]:
-                distance[i[0]] = cost
-                heapq.heappush(queue, (cost, i[0]))
 
-INF = int(1e9)
-V, E = map(int, input().split())
-K = int(input())
-graph = [[] for _ in range(V+1)]
-distance = [INF] * (V+1)
+        for cost, next in graph[now]:
+            new_cost = dist + cost
+            if new_cost < distance[next]:
+                distance[next] = new_cost
+                heapq.heappush(pq, (new_cost, next))
 
-for _ in range(E):
-    u, v, w = map(int, input().split())
-    graph[u].append((v, w))
+dijkstra(k)
 
-dijkstra(K)
-for i in range(1, V+1):
-    if distance[i] == INF:
-        print('INF')
+for dist in distance[1:]:
+    if dist != INF:
+        print(dist)
     else:
-        print(distance[i])
+        print("INF")
