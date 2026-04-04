@@ -1,32 +1,22 @@
-# boj 2096 내려가기 gold 5
-
 import sys
 input = sys.stdin.readline
 
 n = int(input())
+board = [list(map(int, input().split(" "))) for _ in range(n)]
 
-dp_max = [0] * 3
-dp_min = [0] * 3 
+dp_max = board[0][:]
+dp_min = board[0][:]
 
-tmp_max = [0] * 3
-tmp_min = [0] * 3 
+for i in range(1, n):
+    one, two, three = dp_max
+    dp_max[0] = max(one, two) + board[i][0]
+    dp_max[1] = max(one, two, three) + board[i][1]
+    dp_max[2] = max(two, three) + board[i][2]
 
+    one, two, three = dp_min
+    dp_min[0] = min(one, two) + board[i][0]
+    dp_min[1] = min(one, two, three) + board[i][1]
+    dp_min[2] = min(two, three) + board[i][2]
 
-for i in range(n):
-    a, b, c = map(int, input().split())
-    for j in range(3):
-        if j == 0:
-            tmp_max[j] = a + max(dp_max[j], dp_max[j+1])
-            tmp_min[j] = a + min(dp_min[j], dp_min[j+1])
-        elif j == 1:
-            tmp_max[j] = b + max(dp_max[j-1], dp_max[j], dp_max[j+1])
-            tmp_min[j] = b + min(dp_min[j-1], dp_min[j], dp_min[j+1])
-        else:
-            tmp_max[j] = c + max(dp_max[j], dp_max[j-1])
-            tmp_min[j] = c + min(dp_min[j], dp_min[j-1])
-
-    for j in range(3):
-        dp_max[j] = tmp_max[j]
-        dp_min[j] = tmp_min[j]
 
 print(max(dp_max), min(dp_min))
